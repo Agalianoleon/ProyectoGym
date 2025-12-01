@@ -1,0 +1,11 @@
+package com.empresa.curso.ProyectoGym.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.empresa.curso.ProyectoGym.model.User;
+
+public interface UserRepository extends JpaRepository<User, Integer> {
+    Optional<User> findByEmail(String email);
+}

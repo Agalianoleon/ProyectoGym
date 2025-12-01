@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-feed="http://www.springframework.org/schema/integration/feed"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           https://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/integration
+           https://www.springframework.org/schema/integration/spring-integration.xsd
+           http://www.springframework.org/schema/integration/feed
+           https://www.springframework.org/schema/integration/feed/spring-integration-feed.xsd">
+
+    <!-- Canal donde llegan las entradas del feed (SyndEntry) -->
+    <int:channel id="fitgenFeedChannel" />
+
+    <!-- Adapter que lee el RSS/Atom del blog -->
+    <int-feed:inbound-channel-adapter id="fitgenFeedAdapter"
+                                      channel="fitgenFeedChannel"
+                                      url="https://fitgeneration.es/feed/">
+        <!-- Cada 1h, p.ej. -->
+        <int:poller fixed-rate="3600000" max-messages-per-poll="20" />
+    </int-feed:inbound-channel-adapter>
+
+    <!-- Transformador: SyndEntry -> BlogPostDto -->
+    <bean id="fitgenerationTransformer"
+          class="com.empresa.curso.ProyectoGym.integration.FitGenerationEntryTransformer"/>
+
+    <int:channel id="fitgenPostChannel" />
+
+    <int:transformer input-channel="fitgenFeedChannel"
+                     output-channel="fitgenPostChannel"
+                     ref="fitgenerationTransformer"
+                     method="toDto" />
+    
+    <int:service-activator input-channel="fitgenPostChannel"
+                           ref="blogPostService"
+                           method="addPost" />
+
+</beans>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body class="container mt-5">
+    <h1 class="mb-4">Lista de Ejercicios</h1>
+    <form th:action="@{/exercises}" th:object="${exerciseForm}" method="post" class="row g-2 mb-3">
+        <div class="col-auto">
+            <input type="text" th:field="*{nombre}" class="form-control" placeholder="Nombre del ejercicio" required>
+        </div>
+        <div class="col-auto">
+            <input type="text" th:field="*{grupoMuscular}" class="form-control" placeholder="Grupo muscular" required>
+        </div>
+        <div class="col-auto">
+            <input type="text" th:field="*{tipo}" class="form-control" placeholder="Tipo de ejercicio" required>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Agregar Ejercicio</button>
+        </div>
+    </form>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Grupo Muscular</th>
+                <th>Tipo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="exercise : ${exercises}">
+                <td th:text="${exercise.nombre}"></td>
+                <td th:text="${exercise.grupoMuscular}"></td>
+                <td th:text="${exercise.tipo}"></td>
+                <td>
+                    <form th:action="@{'/exercises/' + ${exercise.id} + '/delete'}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/routines}" class="btn btn-secondary mt-3">Ver Rutinas</a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
